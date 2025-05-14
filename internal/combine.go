@@ -10,6 +10,10 @@ import (
 func Combine(spec Spec) (Spec, error) {
 	newSpec := spec
 
+	if newSpec.Paths == nil {
+		newSpec.Paths = map[string]any{}
+	}
+
 	for _, include := range spec.Include {
 		file, err := os.ReadFile(include.Ref)
 		if err != nil {
