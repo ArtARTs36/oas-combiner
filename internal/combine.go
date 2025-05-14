@@ -7,8 +7,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func Combine(spec Spec) (Spec, error) {
-	newSpec := spec
+func Combine(spec Spec) (OpenAPISpec, error) {
+	newSpec := spec.OpenAPISpec
 
 	if newSpec.Paths == nil {
 		newSpec.Paths = map[string]Operations{}
@@ -20,17 +20,27 @@ func Combine(spec Spec) (Spec, error) {
 			return newSpec, fmt.Errorf("read file %s: %w", include.Ref, err)
 		}
 
-		var includeSpec Spec
+		var includeSpec OpenAPISpec
 		if err = yaml.Unmarshal(file, &includeSpec); err != nil {
 			return newSpec, fmt.Errorf("unmarshal yaml from %s: %w", include.Ref, err)
 		}
 
 		for path, operations := range includeSpec.Paths {
 			if _, exists := newSpec.Paths[path]; exists {
-				return Spec{}, fmt.Errorf("path %s from %s already contains in spec", path, include.Ref)
+				return OpenAPISpec{}, fmt.Errorf("path %s from %s already contains in spec", path, include.Ref)
 			}
 
 			newSpec.Paths[path] = operations
+
+			for method := range newSpec.Paths[path] {
+				for code, defResp := range spec.DefaultResponses {
+					if _, exists := newSpec.Paths[path][method].Responses[code]; exists {
+						continue
+					}
+
+					newSpec.Paths[path][method].Responses[code] = defResp
+				}
+			}
 		}
 
 		for name, components := range includeSpec.Components {
@@ -43,8 +53,6 @@ func Combine(spec Spec) (Spec, error) {
 			}
 		}
 	}
-
-	newSpec.Include = nil
 
 	return newSpec, nil
 }

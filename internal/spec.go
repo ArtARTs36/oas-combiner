@@ -9,13 +9,18 @@ import (
 )
 
 type Spec struct {
+	OpenAPISpec `yaml:",inline"`
+
+	Include          []Include        `yaml:"include,omitempty"`
+	DefaultResponses map[any]Response `yaml:"defaultResponses,omitempty"`
+}
+
+type OpenAPISpec struct {
 	OpenAPI    any                       `yaml:"openapi"`
 	Info       any                       `yaml:"info"`
 	Servers    []any                     `yaml:"servers"`
 	Paths      map[string]Operations     `yaml:"paths"`
 	Components map[string]map[string]any `yaml:"components"`
-
-	Include []Include `yaml:"include,omitempty"`
 }
 
 type Include struct {
@@ -52,7 +57,7 @@ func LoadSpec(path string) (*Spec, error) {
 	return &spec, nil
 }
 
-func MarshalSpec(spec *Spec) ([]byte, error) {
+func MarshalSpec(spec *OpenAPISpec) ([]byte, error) {
 	buf := &bytes.Buffer{}
 
 	enc := yaml.NewEncoder(buf)
