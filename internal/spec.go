@@ -11,8 +11,10 @@ import (
 type Spec struct {
 	OpenAPISpec `yaml:",inline"`
 
-	Include          []Include        `yaml:"include,omitempty"`
-	DefaultResponses map[any]Response `yaml:"defaultResponses,omitempty"`
+	Combine struct {
+		Include          []Include        `yaml:"include,omitempty"`
+		DefaultResponses map[any]Response `yaml:"defaultResponses,omitempty"`
+	} `json:"combine,omitempty"`
 }
 
 type OpenAPISpec struct {

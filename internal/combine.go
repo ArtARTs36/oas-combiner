@@ -14,7 +14,7 @@ func Combine(spec Spec) (OpenAPISpec, error) {
 		newSpec.Paths = map[string]Operations{}
 	}
 
-	for _, include := range spec.Include {
+	for _, include := range spec.Combine.Include {
 		file, err := os.ReadFile(include.Ref)
 		if err != nil {
 			return newSpec, fmt.Errorf("read file %s: %w", include.Ref, err)
@@ -33,7 +33,7 @@ func Combine(spec Spec) (OpenAPISpec, error) {
 			newSpec.Paths[path] = operations
 
 			for method := range newSpec.Paths[path] {
-				for code, defResp := range spec.DefaultResponses {
+				for code, defResp := range spec.Combine.DefaultResponses {
 					if _, exists := newSpec.Paths[path][method].Responses[code]; exists {
 						continue
 					}
