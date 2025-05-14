@@ -12,7 +12,7 @@ type Spec struct {
 	OpenAPI    any                       `yaml:"openapi"`
 	Info       any                       `yaml:"info"`
 	Servers    []any                     `yaml:"servers"`
-	Paths      map[string]any            `yaml:"paths"`
+	Paths      map[string]Operations     `yaml:"paths"`
 	Components map[string]map[string]any `yaml:"components"`
 
 	Include []Include `yaml:"include,omitempty"`
@@ -20,6 +20,21 @@ type Spec struct {
 
 type Include struct {
 	Ref string `yaml:"$ref"`
+}
+
+type Operations map[string]Operation
+
+type Operation struct {
+	Tags      []string         `yaml:"tags,flow"`
+	Responses map[any]Response `yaml:"responses"`
+
+	Fields map[string]any `yaml:",inline"`
+}
+
+type Response struct {
+	Ref string `yaml:"$ref,flow"`
+
+	Fields map[string]any `yaml:",inline"`
 }
 
 func LoadSpec(path string) (*Spec, error) {

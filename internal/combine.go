@@ -11,7 +11,7 @@ func Combine(spec Spec) (Spec, error) {
 	newSpec := spec
 
 	if newSpec.Paths == nil {
-		newSpec.Paths = map[string]any{}
+		newSpec.Paths = map[string]Operations{}
 	}
 
 	for _, include := range spec.Include {
