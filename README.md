@@ -23,3 +23,11 @@ combine:
     403: { $ref: "#/components/responses/error-forbidden-response" }
     #...
 ```
+
+## Installation
+
+Through Go
+
+```shell
+go install github.com/artarts36/oas-combiner/cmd/oas-combiner
+```

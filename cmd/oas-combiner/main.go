@@ -13,12 +13,19 @@ func main() {
 		BuildInfo: &cli.BuildInfo{},
 		Args: []*cli.ArgDefinition{
 			{
-				Name:     "spec",
-				Required: true,
+				Name:        "spec",
+				Description: "Basic specification",
+				Required:    true,
 			},
 			{
-				Name:     "output",
-				Required: true,
+				Name:        "output",
+				Description: "Path to output file",
+				Required:    true,
+			},
+		},
+		UsageExamples: []*cli.UsageExample{
+			{
+				Command: "oas-combiner ./base.yaml ./openapi.yaml",
 			},
 		},
 		Action: run,
